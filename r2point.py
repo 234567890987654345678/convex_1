@@ -1,4 +1,5 @@
-from math import sqrt
+from math import *
+from sympy import *
 
 
 class R2Point:
@@ -24,7 +25,10 @@ class R2Point:
 
     # Расстояние до другой точки
     def dist(self, other):
-        return sqrt((other.x - self.x)**2 + (other.y - self.y)**2)
+        if other is None:
+            return 0.0
+        else:
+            return sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
 
     # Лежит ли точка внутри "стандартного" прямоугольника?
     def is_inside(self, a, b):
@@ -44,9 +48,21 @@ class R2Point:
             return self.x == other.x and self.y == other.y
         return False
 
+    # Найти угол между векторами
+    def angle_vector(self, other):
+        v1 = Matrix([self.x, self.y])
+        v2 = Matrix([other.x, other.y])
+        angle = (acos(v1.dot(v2) / (v1.norm() * v2.norm())) *
+                 180 / pi.evalf()).round(3)
+        if angle == 180 or angle == nan:
+            return 0.0
+        else:
+            return angle
+
 
 if __name__ == "__main__":
-    x = R2Point(1.0, 1.0)
+    x = R2Point(10.0, 10.0)
+    y = R2Point(5.0, 5.0)
     print(type(x), x.__dict__)
     print(x.dist(R2Point(1.0, 0.0)))
     a, b, c = R2Point(0.0, 0.0), R2Point(1.0, 0.0), R2Point(1.0, 1.0)

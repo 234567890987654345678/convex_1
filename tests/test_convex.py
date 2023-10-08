@@ -26,6 +26,9 @@ class TestVoid:
     def test_аrea(self):
         assert self.f.area() == 0.0
 
+    def test_angle(self):
+        assert self.f.angle() == 0.0
+
     # При добавлении точки нульугольник превращается в одноугольник
     def test_add(self):
         assert isinstance(self.f.add(R2Point(0.0, 0.0)), Point)
@@ -52,6 +55,9 @@ class TestPoint:
     # Площадь одноугольника нулевая
     def test_аrea(self):
         assert self.f.area() == 0.0
+
+    def test_angle(self):
+        assert self.f.angle() == 0.0
 
     # При добавлении точки одноугольник может не измениться
     def test_add1(self):
@@ -83,6 +89,9 @@ class TestSegment:
     # Площадь двуугольника нулевая
     def test_аrea(self):
         assert self.f.area() == 0.0
+
+    def test_angle(self):
+        assert self.f.angle() == 0.0
 
     # При добавлении точки двуугольник может не измениться
     def test_add1(self):
@@ -149,8 +158,8 @@ class TestPolygon:
     #   изначально он равен сумме длин сторон
     def test_perimeter1(self):
         assert self.f.perimeter() == approx(2.0 + sqrt(2.0))
-    #   добавление точки может его изменить
 
+    #   добавление точки может его изменить
     def test_perimeter2(self):
         assert self.f.add(R2Point(1.0, 1.0)).perimeter() == approx(4.0)
 
@@ -162,3 +171,109 @@ class TestPolygon:
 
     def test_area2(self):
         assert self.f.add(R2Point(1.0, 1.0)).area() == approx(1.0)
+
+    def test_angle1(self):
+        assert self.f.angle() == approx(90.0)
+
+    def test_angle2(self):
+        assert self.f.add(R2Point(1.0, 1.0)).angle() == approx(45.0)
+
+    def test_angle3(self):
+        self.r = Polygon(R2Point(0.0, 0.0),
+                         R2Point(2.0, 2.0),
+                         R2Point(2.0, 0.0))
+        assert self.r.angle() == approx(0.0)
+
+    def test_angle4(self):
+        self.r = Polygon(R2Point(2.0, 2.0),
+                         R2Point(2.0, 0.0),
+                         R2Point(-2.0, -2.0))
+        assert self.r.angle() == approx(0.0)
+
+    def test_angle5(self):
+        self.r = Polygon(R2Point(-5.0, 3.0),
+                         R2Point(6.0, 12.0),
+                         R2Point(0.0, -8.0))
+        assert self.r.angle() == approx(153.435)
+
+    def test_angle6(self):
+        self.r = Polygon(R2Point(-5.0, 3.0),
+                         R2Point(6.0, 12.0),
+                         R2Point(0.0, -8.0))
+        self.r.add(R2Point(-14.0, 0.0))
+        self.r.add(R2Point(-11.0, -3.0))
+        assert self.r.angle() == approx(116.565)
+
+    def test_angle7(self):
+        self.r = Polygon(R2Point(2.0, 0.0),
+                         R2Point(2.0, 2.0),
+                         R2Point(1.0, 2.0))
+        self.r.add(R2Point(0.82, -1.62))
+        self.r.add(R2Point(0.0, 1.0))
+        self.r.add(R2Point(0.0, -0.5))
+        assert self.r.angle() == approx(63.153)
+
+    def test_angle8(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(1.7, 3.0),
+                         R2Point(2.0, 0.4))
+        self.r.add(R2Point(0.0, 0.0))
+        assert self.r.angle() == approx(0.0)
+
+    def test_angle9(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(-1.0, -1.0),
+                         R2Point(1.0, -1.0))
+        self.r.add(R2Point(-1.0, 1.0))
+        self.r.add(R2Point(0.0, 2))
+        assert self.r.angle() == approx(90.0)
+
+    def test_angle10(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(-1.0, -1.0),
+                         R2Point(1.0, -1.0))
+        self.r.add(R2Point(-1.0, 1.0))
+        self.r.add(R2Point(0.0, 1.2))
+        self.r.add(R2Point(1.2, 0.0))
+        self.r.add(R2Point(0.0, -1.2))
+        self.r.add(R2Point(-1.2, 0.0))
+        assert self.r.angle() == approx(45.0)
+
+    def test_angle11(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(-1.0, -1.0),
+                         R2Point(1.0, -1.0))
+        self.r.add(R2Point(-1.0, 1.0))
+        self.r.add(R2Point(0.0, 1.2))
+        self.r.add(R2Point(1.2, 0.0))
+        self.r.add(R2Point(0.0, -1.2))
+        self.r.add(R2Point(-1.2, 0.0))
+        self.r.add(R2Point(0.2, 0.2))
+        assert self.r.angle() == approx(45.0)
+
+    def test_angle12(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(-1.0, -1.0),
+                         R2Point(1.0, -1.0))
+        self.r.add(R2Point(-1.0, 1.0))
+        self.r.add(R2Point(0.0, 1.2))
+        self.r.add(R2Point(1.2, 0.0))
+        self.r.add(R2Point(0.0, -1.2))
+        self.r.add(R2Point(-1.2, 0.0))
+        self.r.add(R2Point(3.0, 3.0))
+        self.r.add(R2Point(10.0, 0.0))
+        assert self.r.angle() == approx(90.0)
+
+    def test_angle13(self):
+        self.r = Polygon(R2Point(1.0, 0.0),
+                         R2Point(0.0, 1.0),
+                         R2Point(1.0, 1.0))
+        self.r.add(R2Point(0.0, 0.0))
+        assert self.r.angle() == approx(45.0)
+
+    def test_angle14(self):
+        self.r = Polygon(R2Point(0.0, 0.0),
+                         R2Point(0.0, 1.0),
+                         R2Point(1.0, 1.0))
+        self.r.add(R2Point(1.0, 0.0))
+        assert self.r.angle() == approx(45.0)

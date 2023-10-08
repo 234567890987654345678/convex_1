@@ -11,6 +11,9 @@ class Figure:
     def area(self):
         return 0.0
 
+    def angle(self):
+        return 0.0
+
 
 class Void(Figure):
     """ "Hульугольник" """
@@ -48,6 +51,9 @@ class Segment(Figure):
         else:
             return self
 
+    def angle(self):
+        return self.p.angle_vector(self.q)
+
 
 class Polygon(Figure):
     """ Многоугольник """
@@ -55,6 +61,9 @@ class Polygon(Figure):
     def __init__(self, a, b, c):
         self.points = Deq()
         self.points.push_first(b)
+        self.p1 = None
+        self.p2 = None
+        self.flag = True
         if b.is_light(a, c):
             self.points.push_first(a)
             self.points.push_last(c)
@@ -63,12 +72,26 @@ class Polygon(Figure):
             self.points.push_first(c)
         self._perimeter = a.dist(b) + b.dist(c) + c.dist(a)
         self._area = abs(R2Point.area(a, b, c))
+        self.max_angle = 0
+        if a.dist(b) >= a.dist(c) and a.dist(b) >= b.dist(c):
+            self.p1 = a
+            self.p2 = b
+        elif a.dist(c) >= a.dist(b) and a.dist(c) >= b.dist(c):
+            self.p1 = a
+            self.p2 = c
+        else:
+            self.p1 = c
+            self.p2 = b
+        self.max_angle = self.p1.angle_vector(self.p2)
 
     def perimeter(self):
         return self._perimeter
 
     def area(self):
         return self._area
+
+    def angle(self):
+        return self.max_angle
 
     # добавление новой точки
     def add(self, t):
@@ -87,12 +110,18 @@ class Polygon(Figure):
             self._area += abs(R2Point.area(t,
                                            self.points.last(),
                                            self.points.first()))
+            if self.points.first().dist(self.points.last()) == \
+                    self.p1.dist(self.p2):
+                self.flag = False
 
             # удаление освещённых рёбер из начала дека
             p = self.points.pop_first()
             while t.is_light(p, self.points.first()):
                 self._perimeter -= p.dist(self.points.first())
                 self._area += abs(R2Point.area(t, p, self.points.first()))
+                if p.dist(self.points.first()) == \
+                        self.p1.dist(self.p2):
+                    self.flag = False
                 p = self.points.pop_first()
             self.points.push_first(p)
 
@@ -101,6 +130,9 @@ class Polygon(Figure):
             while t.is_light(self.points.last(), p):
                 self._perimeter -= p.dist(self.points.last())
                 self._area += abs(R2Point.area(t, p, self.points.last()))
+                if p.dist(self.points.last()) == \
+                        self.p1.dist(self.p2):
+                    self.flag = False
                 p = self.points.pop_last()
             self.points.push_last(p)
 
@@ -108,6 +140,41 @@ class Polygon(Figure):
             self._perimeter += t.dist(self.points.first()) + \
                 t.dist(self.points.last())
             self.points.push_first(t)
+            if not self.flag:
+                self.p1 = self.points.first()
+                self.p2 = self.points.last()
+                self.max_angle = self.p1.angle_vector(self.p2)
+                for n in range(self.points.size()):
+                    if self.points.first().dist(self.points.last()) > \
+                            self.p1.dist(self.p2):
+                        self.p1 = self.points.first()
+                        self.p2 = self.points.last()
+                        self.max_angle = self.p1.angle_vector(self.p2)
+                        self.flag = True
+                    elif self.points.first().dist(self.points.last()) == \
+                            self.p1.dist(self.p2) \
+                            and self.points.first(). \
+                            angle_vector(self.points.last()) > \
+                            self.max_angle:
+                        self.max_angle = self.points.first(). \
+                            angle_vector(self.points.last())
+                        self.p1 = self.points.first()
+                        self.p2 = self.points.last()
+                        self.flag = True
+                    self.points.push_last(self.points.pop_first())
+            else:
+                if t.dist(self.points.first()) > \
+                        self.p1.dist(self.p2):
+                    self.p1 = t
+                    self.p2 = self.points.first()
+                    self.flag = True
+                    self.max_angle = self.p1.angle_vector(self.p2)
+                elif t.dist(self.points.last()) > \
+                        self.p1.dist(self.p2):
+                    self.p1 = t
+                    self.p2 = self.points.last()
+                    self.flag = True
+                    self.max_angle = self.p1.angle_vector(self.p2)
 
         return self
 

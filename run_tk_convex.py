@@ -14,12 +14,16 @@ def point_draw(self, tk):
 
 def segment_draw(self, tk):
     tk.draw_line(self.p, self.q)
+    tk.draw_vector(self.p, R2Point(0.0, 0.0))
+    tk.draw_vector(self.q, R2Point(0.0, 0.0))
 
 
 def polygon_draw(self, tk):
     for n in range(self.points.size()):
         tk.draw_line(self.points.last(), self.points.first())
         self.points.push_last(self.points.pop_first())
+    tk.draw_vector(self.p1, R2Point(0.0, 0.0))
+    tk.draw_vector(self.p2, R2Point(0.0, 0.0))
 
 
 setattr(Void, 'draw', void_draw)
@@ -37,7 +41,7 @@ try:
         f = f.add(R2Point())
         tk.clean()
         f.draw(tk)
-        print(f"S = {f.area()}, P = {f.perimeter()}\n")
-except(EOFError, KeyboardInterrupt):
+        print(f"S = {f.area()}, P = {f.perimeter()}, A = {f.angle()}")
+except (EOFError, KeyboardInterrupt):
     print("\nStop")
     tk.close()
