@@ -25,10 +25,7 @@ class R2Point:
 
     # Расстояние до другой точки
     def dist(self, other):
-        if other is None:
-            return 0.0
-        else:
-            return sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
+        return sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
 
     # Лежит ли точка внутри "стандартного" прямоугольника?
     def is_inside(self, a, b):
@@ -58,6 +55,9 @@ class R2Point:
             return 0.0
         else:
             return angle
+
+    def point(self):
+        return self.x, self.y
 
 
 if __name__ == "__main__":

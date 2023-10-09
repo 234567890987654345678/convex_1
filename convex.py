@@ -59,6 +59,7 @@ class Polygon(Figure):
     """ Многоугольник """
 
     def __init__(self, a, b, c):
+        self.point_first = None
         self.points = Deq()
         self.points.push_first(b)
         self.p1 = None
@@ -139,6 +140,7 @@ class Polygon(Figure):
             # добавление двух новых рёбер
             self._perimeter += t.dist(self.points.first()) + \
                 t.dist(self.points.last())
+            self.point_first = self.points.first()
             self.points.push_first(t)
             if not self.flag:
                 self.p1 = self.points.first()
@@ -163,7 +165,7 @@ class Polygon(Figure):
                         self.flag = True
                     self.points.push_last(self.points.pop_first())
             else:
-                if t.dist(self.points.first()) > \
+                if t.dist(self.point_first) > \
                         self.p1.dist(self.p2):
                     self.p1 = t
                     self.p2 = self.points.first()

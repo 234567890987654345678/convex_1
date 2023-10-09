@@ -277,3 +277,16 @@ class TestPolygon:
                          R2Point(1.0, 1.0))
         self.r.add(R2Point(1.0, 0.0))
         assert self.r.angle() == approx(45.0)
+
+    def test_angle15(self):
+        self.r = Polygon(R2Point(1.0, 1.0),
+                         R2Point(-1.0, 1.0),
+                         R2Point(-1.0, -1.0))
+        self.r.add(R2Point(1.0, -1.0))
+        self.r.add(R2Point(1.5, 0.0))
+        self.r.add(R2Point(0.0, 1.5))
+        self.r.add(R2Point(-1.5, 0.0))
+        self.r.add(R2Point(0.0, -1.5))
+        self.r.add(R2Point(-2.0, -2.0))
+        assert self.r.angle() == approx(45.0)
+
